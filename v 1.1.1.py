@@ -139,8 +139,10 @@ This_board = Board(10, 10, [], "")
 class Move: #deals with moves
     def __init__(self,move): #when initialized
         self.move=move #add move list
+
     def ask_move_row(self): #will ask for input and return with message :Please enter your row (number)."
         return input("Please enter your row (number).") #return
+
     def row_valid(self,item_inputed): #verifies that the row inputed is valid, and askes for row.
         move_append=0 #reset
         try: #assumes that inputed value is integer
@@ -220,25 +222,30 @@ N = Skip level (next)(if in random mode, = Regenerate)
 This_move=Move([])  #create class instance
 
 
-def one_move():
+def one_move():  #This function will do one move of the game.
+    #Define variables and import globals
     global board
     global moves
     global points
     global points_ratio
     bad_move=0
     good_indicator=0
-    This_move.move_type()
-    if This_move.move[0]=="s" or This_move.move[0]=="d":
-        This_move.row_valid(This_move.ask_move_row())
-        This_move.ask_move_column()
-        This_move.direction_of_move()
-        if This_move.move[0]=="s":
-            if This_move.move[3]=="l" or This_move.move[3]=="r":
-                board=This_board.switch_pieces(This_move.move[2],This_move.move[1],"h",board)
-            else:
-                board=This_board.switch_pieces(This_move.move[2], This_move.move[1], "v", board)
-            This_board.print_board()
-        elif This_move.move[0]=="d":
+
+    This_move.move_type()  #Ask what kind of move player wants to make and make sure answer is valid
+    if This_move.move[0]=="s" or This_move.move[0]=="d":  #If move is a 'play move' that changes the board
+        This_move.row_valid(This_move.ask_move_row())  #Ask what row player wants to play on, make sure answer is valid
+        This_move.ask_move_column()  #Ask what column player wants to play on, make sure answer is valid
+        This_move.direction_of_move()  #Ask direction of move and make sure answer is valid
+        if This_move.move[0]=="s":  #If the type of move is switch
+            if This_move.move[3]=="l" or This_move.move[3]=="r":  #Detect if direction is horizantal
+                board=This_board.switch_pieces(This_move.move[2],This_move.move[1],"h",board)  #Switch pieces at coordinates and opposite horizatally
+            else:  #If move is vertical
+                board=This_board.switch_pieces(This_move.move[2], This_move.move[1], "v", board) #Switch pieces at coordinates and opposite vertically
+            This_board.print_board()  #Print board
+
+        elif This_move.move[0]=="d":  #If this move is a delete move
+
+            #Make sure move is in bounds of board
             if This_move.move[2]>=This_board.Xsize-2 and This_move.move[3]=="r":
                 bad_move=1
             if This_move.move[2]<=2 and This_move.move[3]=="l":  #if This_move.move[2]<=This_board.Xsize+2 and This_move.move[3]=="l":
@@ -248,6 +255,7 @@ def one_move():
             if This_move.move[1]<=2 and This_move.move[3]=="u":  #if This_move.move[1]<=This_board.Ysize+2 and This_move.move[3]=="u":
                 bad_move=1
 
+###################################################### What is this?
             if This_move.move[3] == "r":
                 for i in pieces[0]:
                     if i == board[This_move.move[1]][This_move.move[2]]:
@@ -335,8 +343,10 @@ def one_move():
                 if good_indicator == 0:
                     bad_move = 1
                 good_indicator = 0
+###################################################################
 
 
+                #Make sure all 3 pieces are the same.
             if This_move.move[3]=="r":
                 if board[This_move.move[1]][This_move.move[2]]==board[This_move.move[1]][This_move.move[2]+1] and board[This_move.move[1]][This_move.move[2]+1]==board[This_move.move[1]][This_move.move[2]+2]:
                     pass
@@ -358,7 +368,8 @@ def one_move():
                 else:
                     bad_move=1
 
-            if bad_move==0:
+            if bad_move==0:  # If move valid, do move
+                #Do move
                 if This_move.move[3]=="r":
                     board=This_board.drop_peices(This_move.move[2],This_move.move[1],board)
                     board=This_board.drop_peices(This_move.move[2]+1, This_move.move[1], board)
@@ -375,38 +386,27 @@ def one_move():
                     board=This_board.drop_peices(This_move.move[2], This_move.move[1],board)
                     board=This_board.drop_peices(This_move.move[2], This_move.move[1]+1, board)
                     board=This_board.drop_peices(This_move.move[2], This_move.move[1]+2, board)
-                    #board = This_board.drop_peices(This_move.move[2], This_move.move[1] + 2, board)
-                    #board = This_board.drop_peices(This_move.move[2], This_move.move[1] + 1, board)
-                    #board = This_board.drop_peices(This_move.move[2], This_move.move[1], board)
-                This_board.print_board()
-                points+=1
-            else:
+                This_board.print_board()  # Print board
+                points+=1  # Add points!
+
+            else:  # Move invalid
                 print('''
                 Invalid move!
-                ''')
+                ''')  # Notify user
             bad_move=0
-    This_move.move=[]
-    moves+=1
-    points_ratio=str(points)+"/"+str(moves)
+    This_move.move=[]  # Clear move stats
+    moves+=1  # Change number of moves
+    points_ratio=str(points)+"/"+str(moves)  # Change skill ratio
     print('''
 You have scored
 '''+points_ratio+''' skill rating and you have '''+str(points)+" points.")
 
 
-
-# test:This_board.create_board()
-#test:print(board)
-
 ################ MAIN CODE ################
 
 
-This_board.create_board()
-This_board.print_board()
-#board=This_board.drop_peices(4,5,board)
-#This_board.print_board()
-#print(This_move.move)
-#print(This_move.move)  #good test
-#board=This_board.switch_pieces(9,9,"v",board)
-#This_board.print_board()
-while True:
-    one_move()
+This_board.create_board()  # Create board
+This_board.print_board()  #Print board
+
+while True:  #While game is playing
+    one_move()  #Preform a move
